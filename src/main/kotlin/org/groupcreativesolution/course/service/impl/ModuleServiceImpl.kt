@@ -1,4 +1,6 @@
 package org.groupcreativesolution.course.service.impl
 
-class ModuleServiceImpl {
+import org.groupcreativesolution.course.service.ModuleService
+
+class ModuleServiceImpl: ModuleService {
 }
