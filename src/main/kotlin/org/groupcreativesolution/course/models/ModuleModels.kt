@@ -1,6 +1,7 @@
 package org.groupcreativesolution.course.models
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 import java.io.Serializable
 import java.util.*
@@ -21,6 +22,14 @@ class ModuleModels(
 
     @Column(nullable = false)
     var creationDate: String? = null,
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(optional = false)
+    var course: CourseModel? = null,
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "module")
+    var lessons: Set<LessonModel>? = null
 ) :
     Serializable {
     companion object {
