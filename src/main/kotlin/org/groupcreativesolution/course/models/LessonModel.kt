@@ -24,7 +24,7 @@ class LessonModel(
     @Column(nullable = false)
     var creationDate: String? = null,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     var module: ModuleModels? = null
 

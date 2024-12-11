@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 import org.groupcreativesolution.course.enuns.CourseLevel
 import org.groupcreativesolution.course.enuns.CourseStatus
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 import java.io.Serializable
 import java.util.*
 
@@ -41,8 +43,10 @@ class CourseModel (
     var userInstructor: UUID? = null,
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     val modules: Set<ModuleModels>? = null
+
 ): Serializable {
     companion object {
         private const val serialVersionUID = 1L
