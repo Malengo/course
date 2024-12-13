@@ -8,6 +8,7 @@ import org.groupcreativesolution.course.service.LessonService
 import org.groupcreativesolution.course.service.ModuleService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class CourseServiceImpl(
@@ -33,5 +34,13 @@ class CourseServiceImpl(
 
         courseRepository.delete(course)
 
+    }
+
+    override fun saveCourse(course: CourseModel) {
+        courseRepository.save(course)
+    }
+
+    override fun findById(courseId: UUID): CourseModel? {
+        return courseRepository.findById(courseId).orElse(null)
     }
 }

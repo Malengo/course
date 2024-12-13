@@ -37,7 +37,7 @@ class CourseModel (
     var courseStatus: CourseStatus? = null,
 
     @Enumerated(EnumType.STRING)
-    var courseType: CourseLevel? = null,
+    var courseLevel: CourseLevel? = null,
 
     @Column(nullable = false)
     var userInstructor: UUID? = null,
