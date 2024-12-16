@@ -7,6 +7,6 @@ import java.util.UUID
 
 interface ModuleRepository: JpaRepository<ModuleModels, UUID> {
 
-    @Query("SELECT * FROM module m where m.course_course_id = :courseId", nativeQuery = true)
+    @Query("SELECT * FROM modules m where m.course_course_id = :courseId", nativeQuery = true)
     fun findAllModuleByCourseId(courseId: UUID): Collection<ModuleModels>
 }

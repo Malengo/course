@@ -18,7 +18,7 @@ class CourseDTO(
     @NotBlank
     val description: String,
 
-    val imgUrl: String,
+    val imgUrl: String?,
 
     @NotNull
     val courseStatus: CourseStatus,

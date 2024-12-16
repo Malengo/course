@@ -46,4 +46,19 @@ class CourseController(@Autowired private val courseService: CourseService) {
         }
         return ResponseEntity<Any>("Course not found", HttpStatus.NOT_FOUND)
     }
+
+    @GetMapping()
+    fun getAllCourses(): ResponseEntity<Any> {
+        val courses = courseService.findAllCourses()
+        return ResponseEntity<Any>(courses, HttpStatus.OK)
+    }
+
+    @GetMapping("/{courseId}")
+    fun getCourseById(@PathVariable(value = "courseId") courseId: UUID): ResponseEntity<Any> {
+        val course = courseService.findById(courseId)
+        course?.let {
+            return ResponseEntity<Any>(course, HttpStatus.OK)
+        }
+        return ResponseEntity<Any>("Course not found", HttpStatus.NOT_FOUND)
+    }
 }
