@@ -23,17 +23,11 @@ class CourseServiceImpl(
 
         moduleList?.forEach { module ->
             val lessonList = module.moduleId?.let { lessonService.findAllLessonByModuleId(it) }
-            lessonList?.let {
-                lessonService.deleteAllLesson(it)
-            }
+            lessonList?.let { lessonService.deleteAllLesson(it) }
         }
 
-        moduleList?.let {
-            moduleService.deleteAllModule(it)
-        }
-
+        moduleList?.let { moduleService.deleteAllModule(it) }
         courseRepository.delete(course)
-
     }
 
     override fun saveCourse(course: CourseModel) {
@@ -42,5 +36,9 @@ class CourseServiceImpl(
 
     override fun findById(courseId: UUID): CourseModel? {
         return courseRepository.findById(courseId).orElse(null)
+    }
+
+    override fun findAllCourses(): Collection<CourseModel> {
+        return courseRepository.findAll()
     }
 }
