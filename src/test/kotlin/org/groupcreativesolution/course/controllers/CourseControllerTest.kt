@@ -50,6 +50,119 @@ class CourseControllerTest(@Autowired val mockMvc: MockMvc) {
     }
 
     @Test
+    fun `saveCourse should return 400 and send message when course name is empty`() {
+        //given
+        val courseRequest = CourseDTO(
+            name = "",
+            description = "Java Programming",
+            imgUrl = "https://www.google.com",
+            courseStatus = CourseStatus.PROGRESS,
+            courseLevel = CourseLevel.BASIC,
+            userInstructor = UUID.randomUUID()
+        )
+
+        //then
+        mockMvc.post("/api/v1/courses") {
+            contentType = MediaType.APPLICATION_JSON
+            content = ObjectMapper().writeValueAsString(courseRequest)
+        }.andExpect {
+            status { isBadRequest() }
+            content {
+                string(
+                    """
+                   {"name":"must not be blank"}
+            """.trimIndent()
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `saveCourse should return 400 and send message when course description is empty`() {
+        //given
+        val courseRequest = CourseDTO(
+            name = "Java",
+            description = "",
+            imgUrl = "https://www.google.com",
+            courseStatus = CourseStatus.PROGRESS,
+            courseLevel = CourseLevel.BASIC,
+            userInstructor = UUID.randomUUID()
+        )
+
+        //then
+        mockMvc.post("/api/v1/courses") {
+            contentType = MediaType.APPLICATION_JSON
+            content = ObjectMapper().writeValueAsString(courseRequest)
+        }.andExpect {
+            status { isBadRequest() }
+            content {
+                string(
+                    """
+                   {"description":"must not be blank"}
+            """.trimIndent()
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `saveCourse should return 400 and send message when course status is null`() {
+        //given
+        val courseRequest = CourseDTO(
+            name = "Java",
+            description = "Test",
+            imgUrl = "https://www.google.com",
+            courseStatus = null,
+            courseLevel = CourseLevel.BASIC,
+            userInstructor = UUID.randomUUID()
+        )
+
+        //then
+        mockMvc.post("/api/v1/courses") {
+            contentType = MediaType.APPLICATION_JSON
+            content = ObjectMapper().writeValueAsString(courseRequest)
+        }.andExpect {
+            status { isBadRequest() }
+            content {
+                string(
+                    """
+                   {"courseStatus":"must not be null"}
+            """.trimIndent()
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `saveCourse should return 400 and send message when couse level is null`() {
+        //given
+        val courseRequest = CourseDTO(
+            name = "Java",
+            description = "Test",
+            imgUrl = "https://www.google.com",
+            courseStatus = CourseStatus.PROGRESS,
+            courseLevel = null,
+            userInstructor = UUID.randomUUID()
+        )
+
+        //then
+        mockMvc.post("/api/v1/courses") {
+            contentType = MediaType.APPLICATION_JSON
+            content = ObjectMapper().writeValueAsString(courseRequest)
+        }.andExpect {
+            status { isBadRequest() }
+            content {
+                string(
+                    """
+                   {"courseLevel":"must not be null"}
+            """.trimIndent()
+                )
+            }
+        }
+    }
+
+
+    @Test
     fun deleteCourse() {
     }
 

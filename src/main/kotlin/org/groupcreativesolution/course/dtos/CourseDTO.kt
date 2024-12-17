@@ -22,13 +22,13 @@ class CourseDTO(
     val imgUrl: String?,
 
     @field:NotNull
-    val courseStatus: CourseStatus,
+    val courseStatus: CourseStatus?,
 
     @field:NotNull
-    val userInstructor: UUID,
+    val userInstructor: UUID?,
 
     @field:NotNull
-    val courseLevel: CourseLevel
+    val courseLevel: CourseLevel?
     ) {
 
     companion object {
