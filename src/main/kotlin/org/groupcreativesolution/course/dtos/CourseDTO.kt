@@ -8,25 +8,26 @@ import org.groupcreativesolution.course.models.CourseModel
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 class CourseDTO(
 
-    @NotBlank
+    @field:NotBlank
     val name: String,
 
-    @NotBlank
+    @field:NotBlank
     val description: String,
 
     val imgUrl: String?,
 
-    @NotNull
+    @field:NotNull
     val courseStatus: CourseStatus,
 
-    @NotNull
+    @field:NotNull
     val userInstructor: UUID,
 
-    @NotNull
+    @field:NotNull
     val courseLevel: CourseLevel
     ) {
 
@@ -34,7 +35,7 @@ class CourseDTO(
         private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
         fun fromDTO(courseDTO: CourseDTO): CourseModel {
-            val now = LocalDateTime.now(ZoneId.of("UTC")).format(formatter)
+            val now = LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS).format(formatter)
             return CourseModel (
                 courseName = courseDTO.name,
                 description = courseDTO.description,

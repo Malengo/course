@@ -16,8 +16,7 @@ class CourseController(@Autowired private val courseService: CourseService) {
 
     @PostMapping
     fun saveCourse(@RequestBody @Valid courseDTO: CourseDTO): ResponseEntity<Any> {
-        val courseModel = CourseDTO.fromDTO(courseDTO)
-        courseService.saveCourse(courseModel)
+        val courseModel = courseService.saveCourse(courseDTO)
         return ResponseEntity<Any>(courseModel, HttpStatus.CREATED)
     }
 
@@ -41,7 +40,7 @@ class CourseController(@Autowired private val courseService: CourseService) {
             val courseModel = CourseDTO.fromDTO(courseDTO)
             courseModel.courseId = course.courseId
             courseModel.createdAt = course.createdAt
-            courseService.saveCourse(courseModel)
+            courseService.updateCourse(courseModel)
             return ResponseEntity<Any>(courseModel, HttpStatus.OK)
         }
         return ResponseEntity<Any>("Course not found", HttpStatus.NOT_FOUND)
