@@ -1,6 +1,7 @@
 package org.groupcreativesolution.course.service.impl
 
 import jakarta.transaction.Transactional
+import org.groupcreativesolution.course.dtos.CourseDTO
 import org.groupcreativesolution.course.models.CourseModel
 import org.groupcreativesolution.course.repositories.CourseRepository
 import org.groupcreativesolution.course.service.CourseService
@@ -30,8 +31,10 @@ class CourseServiceImpl(
         courseRepository.delete(course)
     }
 
-    override fun saveCourse(course: CourseModel) {
+    override fun saveCourse(courseDTO: CourseDTO): CourseModel {
+        val course = CourseDTO.fromDTO(courseDTO)
         courseRepository.save(course)
+        return course
     }
 
     override fun findById(courseId: UUID): CourseModel? {
@@ -40,5 +43,9 @@ class CourseServiceImpl(
 
     override fun findAllCourses(): Collection<CourseModel> {
         return courseRepository.findAll()
+    }
+
+    override fun updateCourse(course: CourseModel) {
+        courseRepository.save(course)
     }
 }
