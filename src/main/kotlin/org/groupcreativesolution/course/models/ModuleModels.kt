@@ -3,17 +3,19 @@ package org.groupcreativesolution.course.models
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
+import kotlinx.serialization.Contextual
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
-import java.io.Serializable
 import java.util.*
 
 @Entity
 @Table(name = "modules")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class ModuleModels(
+@kotlinx.serialization.Serializable
+data class ModuleModels(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Contextual
     var moduleId: UUID? = null,
 
     @Column(nullable = false, length = 100)
@@ -32,10 +34,6 @@ class ModuleModels(
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "module", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
+    @Contextual
     var lessons: Set<LessonModel>? = null
-) :
-    Serializable {
-    companion object {
-        private const val serialVersionUID = 1L
-    }
-}
+)
