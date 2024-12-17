@@ -2,14 +2,16 @@ package org.groupcreativesolution.course.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
-import java.io.Serializable
-import java.util.UUID
+import kotlinx.serialization.Contextual
+import java.util.*
 
 @Entity
 @Table(name = "lessons")
-class LessonModel(
+@kotlinx.serialization.Serializable
+data class LessonModel(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Contextual
     var lessonId: UUID? = null,
 
     @Column(nullable = false, length = 150)
@@ -28,8 +30,4 @@ class LessonModel(
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     var module: ModuleModels? = null
 
-): Serializable {
-    companion object {
-        private const val serialVersionUID = 1L
-    }
-}
+)
