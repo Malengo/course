@@ -9,5 +9,5 @@ interface CourseService {
     fun saveCourse(courseDTO: CourseDTO): CourseModel
     fun findById(courseId: UUID): CourseModel?
     fun findAllCourses(): Collection<CourseModel>
-    fun updateCourse(course: CourseModel)
+    fun updateCourse(courseDTO: CourseDTO, course: CourseModel): CourseModel
 }

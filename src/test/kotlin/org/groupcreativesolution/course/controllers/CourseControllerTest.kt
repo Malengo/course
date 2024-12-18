@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 import java.util.*
 
 @WebMvcTest
@@ -163,11 +165,95 @@ class CourseControllerTest(@Autowired val mockMvc: MockMvc) {
 
 
     @Test
-    fun deleteCourse() {
+    fun `deleteCourse should return 200 when exits course to delete`() {
+        //given
+        val courseId = UUID.randomUUID()
+
+        //when
+        every { courseService.findById(any()) } returns CourseDTO.fromDTO(CourseDTO(
+            name = "Java",
+            description = "Java Programming",
+            imgUrl = "https://www.google.com",
+            courseStatus = CourseStatus.PROGRESS,
+            courseLevel = CourseLevel.BASIC,
+            userInstructor = UUID.randomUUID()
+        ))
+
+        every { courseService.deleteCourse(any()) } returns Unit
+
+        //then
+        mockMvc.delete("/api/v1/courses/$courseId").andExpect {
+            status { isOk() }
+            content { string("Course delete success") }
+        }
     }
 
     @Test
-    fun updateCourse() {
+    fun `deleteCourse should return 404 when course not found`() {
+        //given
+        val courseId = UUID.randomUUID()
+
+        //when
+        every { courseService.findById(any()) } returns null
+
+        //then
+        mockMvc.delete("/api/v1/courses/$courseId").andExpect {
+            status { isNotFound() }
+            content { string("Course not found") }
+        }
+    }
+
+    @Test
+    fun `updateCourse should return 200 when course update`() {
+        //given
+        val courseId = UUID.randomUUID()
+        val courseRequest = CourseDTO(
+            name = "Java",
+            description = "Java Programming",
+            imgUrl = "https://www.google.com",
+            courseStatus = CourseStatus.PROGRESS,
+            courseLevel = CourseLevel.BASIC,
+            userInstructor = UUID.randomUUID()
+        )
+
+        //when
+        val courseReponse = CourseDTO.fromDTO(courseRequest)
+        every { courseService.findById(any()) } returns courseReponse
+        every { courseService.updateCourse(any(), any()) } returns courseReponse
+
+        //then
+        mockMvc.put("/api/v1/courses/$courseId") {
+            contentType = MediaType.APPLICATION_JSON
+            content = ObjectMapper().writeValueAsString(courseRequest)
+        }.andExpect {
+            status { isOk() }
+            content { json(ObjectMapper().writeValueAsString(courseReponse)) }
+        }
+    }
+
+    @Test
+    fun `updateCoourse should return 404 when course not found`() {
+        //given
+        val courseId = UUID.randomUUID()
+
+        //when
+        every { courseService.findById(any()) } returns null
+
+        //then
+        mockMvc.put("/api/v1/courses/$courseId") {
+            contentType = MediaType.APPLICATION_JSON
+            content = ObjectMapper().writeValueAsString(CourseDTO(
+                name = "Java",
+                description = "Java Programming",
+                imgUrl = "https://www.google.com",
+                courseStatus = CourseStatus.PROGRESS,
+                courseLevel = CourseLevel.BASIC,
+                userInstructor = UUID.randomUUID()
+            ))
+        }.andExpect {
+            status { isNotFound() }
+            content { string("Course not found") }
+        }
     }
 
     @Test

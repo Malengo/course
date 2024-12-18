@@ -37,10 +37,7 @@ class CourseController(@Autowired private val courseService: CourseService) {
     ): ResponseEntity<Any> {
         val course = courseService.findById(courseId)
         course?.let {
-            val courseModel = CourseDTO.fromDTO(courseDTO)
-            courseModel.courseId = course.courseId
-            courseModel.createdAt = course.createdAt
-            courseService.updateCourse(courseModel)
+            val courseModel = courseService.updateCourse(courseDTO, course)
             return ResponseEntity<Any>(courseModel, HttpStatus.OK)
         }
         return ResponseEntity<Any>("Course not found", HttpStatus.NOT_FOUND)
