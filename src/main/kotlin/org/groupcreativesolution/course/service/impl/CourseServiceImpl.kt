@@ -45,7 +45,11 @@ class CourseServiceImpl(
         return courseRepository.findAll()
     }
 
-    override fun updateCourse(course: CourseModel) {
-        courseRepository.save(course)
+    override fun updateCourse(courseDTO: CourseDTO, course: CourseModel): CourseModel {
+        val courseModel = CourseDTO.fromDTO(courseDTO)
+        courseModel.courseId = course.courseId
+        courseModel.createdAt = course.createdAt
+        courseRepository.save(courseModel)
+        return courseModel
     }
 }
