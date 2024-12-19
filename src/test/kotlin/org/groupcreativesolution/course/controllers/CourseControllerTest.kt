@@ -6,15 +6,17 @@ import io.mockk.every
 import org.groupcreativesolution.course.dtos.CourseDTO
 import org.groupcreativesolution.course.enuns.CourseLevel
 import org.groupcreativesolution.course.enuns.CourseStatus
+import org.groupcreativesolution.course.models.CourseModel
 import org.groupcreativesolution.course.service.CourseService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.delete
-import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.put
+import org.springframework.test.web.servlet.*
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 @WebMvcTest
@@ -170,14 +172,16 @@ class CourseControllerTest(@Autowired val mockMvc: MockMvc) {
         val courseId = UUID.randomUUID()
 
         //when
-        every { courseService.findById(any()) } returns CourseDTO.fromDTO(CourseDTO(
-            name = "Java",
-            description = "Java Programming",
-            imgUrl = "https://www.google.com",
-            courseStatus = CourseStatus.PROGRESS,
-            courseLevel = CourseLevel.BASIC,
-            userInstructor = UUID.randomUUID()
-        ))
+        every { courseService.findById(any()) } returns CourseDTO.fromDTO(
+            CourseDTO(
+                name = "Java",
+                description = "Java Programming",
+                imgUrl = "https://www.google.com",
+                courseStatus = CourseStatus.PROGRESS,
+                courseLevel = CourseLevel.BASIC,
+                userInstructor = UUID.randomUUID()
+            )
+        )
 
         every { courseService.deleteCourse(any()) } returns Unit
 
@@ -242,14 +246,16 @@ class CourseControllerTest(@Autowired val mockMvc: MockMvc) {
         //then
         mockMvc.put("/api/v1/courses/$courseId") {
             contentType = MediaType.APPLICATION_JSON
-            content = ObjectMapper().writeValueAsString(CourseDTO(
-                name = "Java",
-                description = "Java Programming",
-                imgUrl = "https://www.google.com",
-                courseStatus = CourseStatus.PROGRESS,
-                courseLevel = CourseLevel.BASIC,
-                userInstructor = UUID.randomUUID()
-            ))
+            content = ObjectMapper().writeValueAsString(
+                CourseDTO(
+                    name = "Java",
+                    description = "Java Programming",
+                    imgUrl = "https://www.google.com",
+                    courseStatus = CourseStatus.PROGRESS,
+                    courseLevel = CourseLevel.BASIC,
+                    userInstructor = UUID.randomUUID()
+                )
+            )
         }.andExpect {
             status { isNotFound() }
             content { string("Course not found") }
@@ -257,10 +263,83 @@ class CourseControllerTest(@Autowired val mockMvc: MockMvc) {
     }
 
     @Test
-    fun getAllCourses() {
+    fun `getAllCourses should return 200 and a collection of courses`() {
+        //given
+        val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        val now = LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS).format(formatter)
+        val courses = listOf<CourseModel>(
+            CourseModel(
+                courseId = UUID.randomUUID(),
+                courseName = "Java",
+                description = "Test",
+                imageUrl = "https://www.google.com",
+                createdAt = now,
+                updatedAt = now,
+                courseStatus = CourseStatus.PROGRESS,
+                courseLevel = CourseLevel.BASIC,
+                userInstructor = UUID.randomUUID(),
+                ),
+            CourseModel(
+                courseId = UUID.randomUUID(),
+                courseName = "Java EE",
+                description = "Java Web",
+                imageUrl = "https://www.google.com",
+                createdAt = now,
+                updatedAt = now,
+                courseStatus = CourseStatus.PROGRESS,
+                courseLevel = CourseLevel.BASIC,
+                userInstructor = UUID.randomUUID(),
+            )
+        )
+
+        //when
+        every { courseService.findAllCourses() } returns courses
+
+        //then
+        mockMvc.get("/api/v1/courses") {
+        }.andExpect {
+            status { isOk() }
+            content { json(ObjectMapper().writeValueAsString(courses)) }
+        }
     }
 
     @Test
-    fun getCourseById() {
+    fun `getCourseById should return 200 when found course by id`() {
+        //given
+        val uuid = UUID.randomUUID()
+        val course = CourseModel(
+            courseId = UUID.randomUUID(),
+            courseName = "Java",
+            description = "Test",
+            imageUrl = "https://www.google.com",
+            courseStatus = CourseStatus.PROGRESS,
+            courseLevel = CourseLevel.BASIC,
+            userInstructor = UUID.randomUUID(),
+        )
+
+        //when
+        every { courseService.findById(any()) } returns course
+
+        //then
+        mockMvc.get("/api/v1/courses/${uuid}")
+            .andExpect {
+            status { isOk() }
+            content { json(ObjectMapper().writeValueAsString(course)) }
+        }
+    }
+
+    @Test
+    fun `getCourseById should return 404 when course not found`() {
+        //given
+        val uuid = UUID.randomUUID()
+
+        //when
+        every { courseService.findById(any()) } returns null
+
+        //then
+        mockMvc.get("/api/v1/courses/${uuid}").andExpect {
+            status { isNotFound() }
+            content { string("Course not found") }
+        }
     }
 }
