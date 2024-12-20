@@ -9,4 +9,7 @@ interface LessonRepository : JpaRepository<LessonModel, UUID> {
 
     @Query("SELECT * FROM lesson l where l.module_module_id = :moduleId", nativeQuery = true)
     fun findAllLessonByModuleId(moduleId: UUID): Collection<LessonModel>
+
+    @Query("SELECT * FROM lesson l where l.module_module_id = :moduleId and l.lesson_id = :lessonId", nativeQuery = true)
+    fun findLessonIntoModule(moduleId: UUID, lessonId: UUID): LessonModel?
 }

@@ -16,4 +16,8 @@ class ModuleServiceImpl(@Autowired private val repository: ModuleRepository) : M
     override fun deleteAllModule(moduleList: Collection<ModuleModels>) {
         repository.deleteAll(moduleList)
     }
+
+    override fun findModuleById(moduleId: UUID): ModuleModels? {
+        return repository.findById(moduleId).orElse(null)
+    }
 }
