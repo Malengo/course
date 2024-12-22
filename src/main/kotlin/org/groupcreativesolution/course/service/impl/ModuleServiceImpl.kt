@@ -1,5 +1,7 @@
 package org.groupcreativesolution.course.service.impl
 
+import org.groupcreativesolution.course.dtos.ModuleDTO
+import org.groupcreativesolution.course.models.CourseModel
 import org.groupcreativesolution.course.models.ModuleModels
 import org.groupcreativesolution.course.repositories.ModuleRepository
 import org.groupcreativesolution.course.service.ModuleService
@@ -19,5 +21,28 @@ class ModuleServiceImpl(@Autowired private val repository: ModuleRepository) : M
 
     override fun findModuleById(moduleId: UUID): ModuleModels? {
         return repository.findById(moduleId).orElse(null)
+    }
+
+    override fun saveModule(course: CourseModel, moduleDTO: ModuleDTO): ModuleModels {
+        val module = ModuleDTO.fromDTO(moduleDTO)
+        module.course = course
+        repository.save(module)
+        return module
+    }
+
+    override fun findModuleIntoCourse(courseId: UUID, moduleId: UUID): ModuleModels? {
+        return repository.findModuleIntoCourse(courseId, moduleId)
+    }
+
+    override fun deleteModule(module: ModuleModels) {
+        repository.delete(module)
+    }
+
+    override fun updateModule(moduleDTO: ModuleDTO, module: ModuleModels): ModuleModels {
+        val moduleModels = ModuleDTO.fromDTO(moduleDTO)
+        moduleModels.moduleId = module.moduleId
+        module.creationDate = module.creationDate
+        repository.save(module)
+        return module
     }
 }
