@@ -9,4 +9,8 @@ interface ModuleRepository: JpaRepository<ModuleModels, UUID> {
 
     @Query("SELECT * FROM modules m where m.course_course_id = :courseId", nativeQuery = true)
     fun findAllModuleByCourseId(courseId: UUID): Collection<ModuleModels>
+
+    @Query("SELECT * FROM modules m where m.course_course_id = :courseId and m.id = :moduleId", nativeQuery = true)
+    fun findModuleIntoCourse(courseId: UUID, moduleId: UUID): ModuleModels?
+
 }
