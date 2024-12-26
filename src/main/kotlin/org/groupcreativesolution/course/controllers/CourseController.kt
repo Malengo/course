@@ -2,8 +2,12 @@ package org.groupcreativesolution.course.controllers
 
 import jakarta.validation.Valid
 import org.groupcreativesolution.course.dtos.CourseDTO
+import org.groupcreativesolution.course.repositories.sprcifications.CourseModelSpecification
 import org.groupcreativesolution.course.service.CourseService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -44,8 +48,11 @@ class CourseController(@Autowired private val courseService: CourseService) {
     }
 
     @GetMapping()
-    fun getAllCourses(): ResponseEntity<Any> {
-        val courses = courseService.findAllCourses()
+    fun getAllCourses(
+        @PageableDefault(page = 0, size = 10, sort = ["courseId"], direction = Sort.Direction.ASC) pageable: Pageable,
+        specification: CourseModelSpecification
+    ): ResponseEntity<Any> {
+        val courses = courseService.findAllCoursesPageable(pageable, specification)
         return ResponseEntity<Any>(courses, HttpStatus.OK)
     }
 
