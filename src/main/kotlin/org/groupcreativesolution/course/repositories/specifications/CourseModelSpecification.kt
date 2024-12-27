@@ -1,4 +1,4 @@
-package org.groupcreativesolution.course.repositories.sprcifications
+package org.groupcreativesolution.course.repositories.specifications
 
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery

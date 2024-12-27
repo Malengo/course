@@ -2,9 +2,13 @@ package org.groupcreativesolution.course.controllers
 
 import jakarta.validation.Valid
 import org.groupcreativesolution.course.dtos.LessonDTO
+import org.groupcreativesolution.course.repositories.specifications.LessonModelSpecification
 import org.groupcreativesolution.course.service.LessonService
 import org.groupcreativesolution.course.service.ModuleService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -65,8 +69,12 @@ class LessonController(
     }
 
     @GetMapping("/api/v1/modules/{moduleId}/lessons")
-    fun getAllLessonsByModuleId(@PathVariable(value = "moduleId") moduleId: UUID): ResponseEntity<Any> {
-        val lessons = lessonService.findAllLessonByModuleId(moduleId)
+    fun getAllLessonsByModuleId(
+        @PathVariable(value = "moduleId") moduleId: UUID,
+        @PageableDefault(page = 0, size = 10, sort = ["moduleId"], direction = Sort.Direction.ASC) pageable: Pageable,
+        specification: LessonModelSpecification
+    ): ResponseEntity<Any> {
+        val lessons = lessonService.findAllLessonByModuleIdAndPageable(specification.findByModuleId(moduleId).and(specification), pageable)
         return ResponseEntity<Any>(lessons, HttpStatus.OK)
     }
 

@@ -2,9 +2,13 @@ package org.groupcreativesolution.course.controllers
 
 import jakarta.validation.Valid
 import org.groupcreativesolution.course.dtos.ModuleDTO
+import org.groupcreativesolution.course.repositories.specifications.ModuleModelSpecification
 import org.groupcreativesolution.course.service.CourseService
 import org.groupcreativesolution.course.service.ModuleService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -58,8 +62,12 @@ class ModuleController(
     }
 
     @GetMapping("/api/v1/modules/{courseId}/module")
-    fun findAllModuleByCourseId(@PathVariable(value = "courseId") courseId: UUID): ResponseEntity<Any> {
-        val modules = moduleService.findAllModuleByCourseId(courseId)
+    fun findAllModuleByCourseId(
+        @PathVariable(value = "courseId") courseId: UUID,
+        @PageableDefault(page = 0, size = 10, sort = ["moduleId"], direction = Sort.Direction.ASC) pageable: Pageable,
+        specification: ModuleModelSpecification
+    ): ResponseEntity<Any> {
+        val modules = moduleService.findAllModuleByCourseIdAnPageable(pageable, specification.findByCourseId(courseId).and(specification))
         return ResponseEntity(modules, HttpStatus.OK)
     }
 

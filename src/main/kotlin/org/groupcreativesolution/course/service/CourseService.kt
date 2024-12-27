@@ -2,7 +2,7 @@ package org.groupcreativesolution.course.service
 
 import org.groupcreativesolution.course.dtos.CourseDTO
 import org.groupcreativesolution.course.models.CourseModel
-import org.groupcreativesolution.course.repositories.sprcifications.CourseModelSpecification
+import org.groupcreativesolution.course.repositories.specifications.CourseModelSpecification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.util.*

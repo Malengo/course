@@ -6,6 +6,9 @@ import org.groupcreativesolution.course.models.ModuleModels
 import org.groupcreativesolution.course.repositories.ModuleRepository
 import org.groupcreativesolution.course.service.ModuleService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -44,5 +47,12 @@ class ModuleServiceImpl(@Autowired private val repository: ModuleRepository) : M
         module.creationDate = module.creationDate
         repository.save(module)
         return module
+    }
+
+    override fun findAllModuleByCourseIdAnPageable(
+        pageable: Pageable,
+        specification: Specification<ModuleModels>
+    ): Page<ModuleModels> {
+        return repository.findAll(specification, pageable)
     }
 }

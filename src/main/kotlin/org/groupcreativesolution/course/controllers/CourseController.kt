@@ -2,7 +2,7 @@ package org.groupcreativesolution.course.controllers
 
 import jakarta.validation.Valid
 import org.groupcreativesolution.course.dtos.CourseDTO
-import org.groupcreativesolution.course.repositories.sprcifications.CourseModelSpecification
+import org.groupcreativesolution.course.repositories.specifications.CourseModelSpecification
 import org.groupcreativesolution.course.service.CourseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable

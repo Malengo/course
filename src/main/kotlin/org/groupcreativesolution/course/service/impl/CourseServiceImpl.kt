@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional
 import org.groupcreativesolution.course.dtos.CourseDTO
 import org.groupcreativesolution.course.models.CourseModel
 import org.groupcreativesolution.course.repositories.CourseRepository
-import org.groupcreativesolution.course.repositories.sprcifications.CourseModelSpecification
+import org.groupcreativesolution.course.repositories.specifications.CourseModelSpecification
 import org.groupcreativesolution.course.service.CourseService
 import org.groupcreativesolution.course.service.LessonService
 import org.groupcreativesolution.course.service.ModuleService
