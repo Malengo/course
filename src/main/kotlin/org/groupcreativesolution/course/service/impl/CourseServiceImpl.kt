@@ -4,10 +4,13 @@ import jakarta.transaction.Transactional
 import org.groupcreativesolution.course.dtos.CourseDTO
 import org.groupcreativesolution.course.models.CourseModel
 import org.groupcreativesolution.course.repositories.CourseRepository
+import org.groupcreativesolution.course.repositories.specifications.CourseModelSpecification
 import org.groupcreativesolution.course.service.CourseService
 import org.groupcreativesolution.course.service.LessonService
 import org.groupcreativesolution.course.service.ModuleService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -51,5 +54,12 @@ class CourseServiceImpl(
         courseModel.createdAt = course.createdAt
         courseRepository.save(courseModel)
         return courseModel
+    }
+
+    override fun findAllCoursesPageable(
+        pageable: Pageable,
+        specification: CourseModelSpecification
+    ): Page<CourseModel> {
+        return courseRepository.findAll(specification, pageable)
     }
 }
