@@ -49,6 +49,10 @@ data class CourseModel(
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
     @Contextual
-    val modules: Set<ModuleModels>? = null
+    val modules: Set<ModuleModels>? = null,
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    val courseUserModel: Set<CourseUserModel>? = null
 
 )
