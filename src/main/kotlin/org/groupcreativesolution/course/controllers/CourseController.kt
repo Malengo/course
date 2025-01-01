@@ -50,9 +50,14 @@ class CourseController(@Autowired private val courseService: CourseService) {
     @GetMapping()
     fun getAllCourses(
         @PageableDefault(page = 0, size = 10, sort = ["courseId"], direction = Sort.Direction.ASC) pageable: Pageable,
+        @RequestParam(value = "userId", required = false) userId: UUID?,
         specification: CourseModelSpecification
     ): ResponseEntity<Any> {
-        val courses = courseService.findAllCoursesPageable(pageable, specification)
+        val courses = if (userId != null) {
+            courseService.findAllCoursesPageable(pageable, specification.getCourseByUserId(userId).and(specification))
+        } else {
+            courseService.findAllCoursesPageable(pageable, specification)
+        }
         return ResponseEntity<Any>(courses, HttpStatus.OK)
     }
 

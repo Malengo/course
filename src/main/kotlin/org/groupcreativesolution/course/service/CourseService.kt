@@ -5,6 +5,7 @@ import org.groupcreativesolution.course.models.CourseModel
 import org.groupcreativesolution.course.repositories.specifications.CourseModelSpecification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import java.util.*
 
 interface CourseService {
@@ -13,5 +14,5 @@ interface CourseService {
     fun findById(courseId: UUID): CourseModel?
     fun findAllCourses(): Collection<CourseModel>
     fun updateCourse(courseDTO: CourseDTO, course: CourseModel): CourseModel
-    fun findAllCoursesPageable(pageable: Pageable, specification: CourseModelSpecification): Page<CourseModel>
+    fun findAllCoursesPageable(pageable: Pageable, specification: Specification<CourseModel>): Page<CourseModel>
 }

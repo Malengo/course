@@ -1,13 +1,12 @@
 package org.groupcreativesolution.course.repositories.specifications
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Predicate
-import jakarta.persistence.criteria.Root
+import jakarta.persistence.criteria.*
 import org.groupcreativesolution.course.enuns.CourseLevel
 import org.groupcreativesolution.course.enuns.CourseStatus
 import org.groupcreativesolution.course.models.CourseModel
+import org.groupcreativesolution.course.models.CourseUserModel
 import org.springframework.data.jpa.domain.Specification
+import java.util.UUID
 
 data class CourseModelSpecification(
     val courseName: String? = null,
@@ -30,4 +29,11 @@ data class CourseModelSpecification(
         return criteriaBuilder.and(*predicate.toTypedArray())
     }
 
+    fun getCourseByUserId(userId: UUID): Specification<CourseModel> {
+        return Specification<CourseModel> { root, query, criteriaBuilder ->
+            query?.distinct(true)
+            val userCourseJoin: Join<CourseModel, CourseUserModel> = root.join("courseUserModel")
+            criteriaBuilder.equal(userCourseJoin.get<UUID>("userId"), userId)
+        }
+    }
 }
