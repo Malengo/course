@@ -55,4 +55,9 @@ data class CourseModel(
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     val courseUserModel: Set<CourseUserModel>? = null
 
-)
+) {
+    fun convertToCourseUserModel(userId: UUID): CourseUserModel {
+        return CourseUserModel(null, this, userId)
+    }
+
+}
