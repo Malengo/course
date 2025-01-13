@@ -1,16 +1,20 @@
 package org.groupcreativesolution.course.clients
 
+import org.apache.coyote.BadRequestException
 import org.groupcreativesolution.course.dtos.RestResponsePage
 import org.groupcreativesolution.course.dtos.UserDTO
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import java.util.*
 
+
 @Component
-class CourseClient(private val restClient: RestClient) {
+class AuthUserClient(private val restClient: RestClient) {
 
     fun getAllUserby(courseId: UUID, pageable: Pageable): Page<UserDTO> {
         val searchResult: Page<UserDTO>?
@@ -27,5 +31,17 @@ class CourseClient(private val restClient: RestClient) {
             e.printStackTrace()
         }
         return Page.empty()
+    }
+
+    fun getUserById(userId: UUID): UserDTO? {
+        val url = "/users/$userId"
+        val userDTO = restClient.get()
+            .uri(url)
+            .retrieve()
+            .onStatus(HttpStatusCode::is4xxClientError) { _ ,_ ->
+                throw BadRequestException("User not found")
+            }
+            .body(UserDTO::class.java)
+        return userDTO
     }
 }

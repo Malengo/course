@@ -1,7 +1,9 @@
 package org.groupcreativesolution.course.controllers
 
+import com.groupcreativesolution.authuser.enums.UserStatus
 import jakarta.validation.Valid
-import org.groupcreativesolution.course.clients.CourseClient
+import org.apache.coyote.BadRequestException
+import org.groupcreativesolution.course.clients.AuthUserClient
 import org.groupcreativesolution.course.dtos.SubscriptionUserDTO
 import org.groupcreativesolution.course.dtos.UserDTO
 import org.groupcreativesolution.course.service.CourseService
@@ -19,7 +21,7 @@ import java.util.*
 @RequestMapping("/api/v1")
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 class CourseUserController(
-    private val courseClient: CourseClient,
+    private val authUserClient: AuthUserClient,
     private val courseService: CourseService,
     private val courseUserService: CourseUserService
 ) {
@@ -29,7 +31,7 @@ class CourseUserController(
         @PathVariable("courseId") courseId: UUID,
         @PageableDefault(page = 0, size = 10, sort = ["userId"], direction = Sort.Direction.DESC) pageable: Pageable
         ): ResponseEntity<Page<UserDTO>> {
-        courseClient.getAllUserby(courseId, pageable).let {
+        authUserClient.getAllUserby(courseId, pageable).let {
             return ResponseEntity.ok(it)
         }
         return ResponseEntity.noContent().build()
@@ -45,6 +47,15 @@ class CourseUserController(
 
         if (courseUserService.existsByCourseAndUserId(courseModel, subscriptionUserDTO.userId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already subscribed to this course")
+        }
+
+        try {
+            val user = authUserClient.getUserById(subscriptionUserDTO.userId) ?: return ResponseEntity("User not found", HttpStatus.NOT_FOUND)
+            if (user.userStatus == UserStatus.BLOCKED) return ResponseEntity("User is blocked", HttpStatus.CONFLICT)
+        } catch (exception: BadRequestException) {
+            return ResponseEntity("User not found", HttpStatus.NOT_FOUND)
+        } catch (exception: Exception) {
+            return ResponseEntity("Server ERROR", HttpStatus.INTERNAL_SERVER_ERROR)
         }
 
         val courseUserModel = courseModel.convertToCourseUserModel(subscriptionUserDTO.userId)

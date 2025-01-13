@@ -8,10 +8,12 @@ data class UserDTO(
     val userId: UUID,
     val username: String,
     val email: String,
-    val fullName: String,
+    val fullName: String?,
     val userStatus: UserStatus,
     val userType: UserType,
-    val phoneNumber: String,
-    val cpf: String,
-    val image: String
+    val phoneNumber: String?,
+    val cpf: String?,
+    val image: String?,
+    val createdAt: String,
+    val updatedAt: String,
 )
