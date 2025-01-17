@@ -7,4 +7,5 @@ import java.util.*
 interface CourseUserService {
     fun existsByCourseAndUserId(courseModel: CourseModel , userId: UUID): Boolean
     fun save(courseUserModel: CourseUserModel)
+    fun saveAndSendSubscriptionUserInCourse(courseUserModel: CourseUserModel): CourseUserModel
 }

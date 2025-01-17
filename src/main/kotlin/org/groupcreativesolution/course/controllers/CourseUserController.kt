@@ -58,9 +58,9 @@ class CourseUserController(
             return ResponseEntity("Server ERROR", HttpStatus.INTERNAL_SERVER_ERROR)
         }
 
-        val courseUserModel = courseModel.convertToCourseUserModel(subscriptionUserDTO.userId)
-        courseUserService.save(courseUserModel)
-        return ResponseEntity.status(HttpStatus.CREATED).body("User subscribed to course")
+        var courseUserModel = courseModel.convertToCourseUserModel(subscriptionUserDTO.userId)
+        courseUserModel = courseUserService.saveAndSendSubscriptionUserInCourse(courseUserModel)
+        return ResponseEntity.status(HttpStatus.CREATED).body(courseUserModel)
     }
 
 }
